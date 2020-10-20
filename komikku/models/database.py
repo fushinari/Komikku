@@ -659,7 +659,7 @@ class Chapter:
             shutil.rmtree(self.path)
 
     def get_page(self, page_index):
-        if not self.pages:
+        if not self.pages or not self.pages[page_index]:
             return None
 
         page_path = self.get_page_path(page_index)

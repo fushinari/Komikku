@@ -508,7 +508,8 @@ class Pager(Handy.Carousel, BasePager):
             self.reader.controls.init(page.chapter)
 
         # Update page number and controls page slider
-        self.reader.update_page_number(page.index + 1, len(page.chapter.pages) if page.loadable else None)
-        self.reader.controls.set_scale_value(page.index + 1)
+        if page.chapter.pages:
+            self.reader.update_page_number(page.index + 1, len(page.chapter.pages) if page.loadable else None)
+            self.reader.controls.set_scale_value(page.index + 1)
 
         return GLib.SOURCE_REMOVE
