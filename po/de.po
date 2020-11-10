@@ -827,7 +827,202 @@ msgstr ""
 "Kauf offizieller Manga unterstützen kannst, sobald\n"
 "diese in deiner Sprache/deinem Land erhältlich sind."
 
-#: ../data/ui/application_window.ui:688
+#: ../data/ui/about_dialog.ui.in:17
+msgid "Learn more about Komikku"
+msgstr "Mehr über Komikku erfahren"
+
+#: ../data/ui/add_dialog.ui:46
+msgid "Select a server"
+msgstr "Server auswählen"
+
+#: ../data/ui/add_dialog.ui:301 ../data/ui/application_window.ui:441
+msgid "Authors"
+msgstr "Autoren"
+
+#: ../data/ui/add_dialog.ui:329 ../data/ui/application_window.ui:469
+msgid "Genres"
+msgstr "Genres"
+
+#: ../data/ui/add_dialog.ui:357 ../data/ui/application_window.ui:497
+msgid "Status"
+msgstr "Status"
+
+#: ../data/ui/add_dialog.ui:385 ../data/ui/application_window.ui:525
+msgid "Server"
+msgstr "Server"
+
+#: ../data/ui/add_dialog.ui:413 ../data/ui/application_window.ui:554
+msgid "Synopsis"
+msgstr "Inhalt"
+
+#: ../data/ui/add_dialog.ui:444 ../data/ui/application_window.ui:639
+msgid "Scanlators"
+msgstr "Übersetzer"
+
+#: ../data/ui/shortcuts_overview.ui:14
+msgctxt "Shortcut window description"
+msgid "Application"
+msgstr "Anwendung"
+
+#: ../data/ui/shortcuts_overview.ui:18
+msgctxt "Shortcut window description"
+msgid "Open preferences"
+msgstr "Einstellungen"
+
+#: ../data/ui/shortcuts_overview.ui:25
+msgctxt "Shortcut window description"
+msgid "Toggle fullscreen mode"
+msgstr "Vollbildmodus"
+
+#: ../data/ui/shortcuts_overview.ui:32
+msgctxt "Shortcut window description"
+msgid "Keyboard Shortcuts"
+msgstr "Tastenkürzel"
+
+#: ../data/ui/shortcuts_overview.ui:41
+msgctxt "Shortcut window description"
+msgid "Library"
+msgstr "Bibliothek"
+
+#: ../data/ui/shortcuts_overview.ui:45
+msgctxt "Shortcut window description"
+msgid "Add manga"
+msgstr "Manga hinzufügen"
+
+#: ../data/ui/shortcuts_overview.ui:52
+msgctxt "Shortcut window description"
+msgid "Select all"
+msgstr "Alle auswählen"
+
+#: ../data/ui/shortcuts_overview.ui:59
+msgctxt "Shortcut window description"
+msgid "Search"
+msgstr "Suche"
+
+#: ../data/ui/shortcuts_overview.ui:68
+msgctxt "Shortcut window description"
+msgid "Manga Card"
+msgstr "Manga"
+
+#: ../data/ui/shortcuts_overview.ui:72
+msgctxt "Shortcut window description"
+msgid "Select all chapters"
+msgstr "Alle Kapitel auswählen"
+
+#: ../data/ui/shortcuts_overview.ui:94
+msgctxt "Shortcut window description"
+msgid "Download Manager"
+msgstr "Download-Manager"
+
+#: ../data/ui/shortcuts_overview.ui:98
+msgctxt "Shortcut window description"
+msgid "Select all downloads"
+msgstr "Alle Downloads auswählen"
+
+#: ../data/ui/download_manager_dialog.ui:32 ../data/ui/menu/main.xml:11
+msgid "Download Manager"
+msgstr "Download-Manager"
+
+#: ../data/ui/download_manager_dialog.ui:201
+msgid "No downloads"
+msgstr "Keine Downloads"
+
+#: ../data/ui/menu/reader.xml:7
+msgid "Reading direction"
+msgstr "Leserichtung"
+
+#: ../data/ui/menu/reader.xml:30
+msgid "Type of Scaling"
+msgstr "Skalierung"
+
+#: ../data/ui/menu/reader.xml:76
+msgid "Crop Borders"
+msgstr "Ränder entfernen"
+
+#: ../data/ui/menu/download_manager.xml:7
+msgid "Delete All"
+msgstr "Alle löschen"
+
+#: ../data/ui/menu/library_search.xml:11
+msgid "Unread"
+msgstr "Ungelesen"
+
+#: ../data/ui/menu/library_search.xml:15
+msgid "Recents"
+msgstr "Neu"
+
+#: ../data/ui/menu/library_search.xml:19
+msgid "To Read"
+msgstr ""
+
+#: ../data/ui/menu/library_selection_mode.xml:7 ../data/ui/menu/card.xml:11
+msgid "Update"
+msgstr "Aktualisieren"
+
+#: ../data/ui/menu/library_selection_mode.xml:11
+#: ../data/ui/menu/download_manager_selection_mode.xml:7
+#: ../data/ui/menu/card.xml:7
+msgid "Delete"
+msgstr "Löschen"
+
+#: ../data/ui/menu/library_selection_mode.xml:18
+#: ../data/ui/menu/card_selection_mode.xml:26
+msgid "Select All"
+msgstr "Alle auswählen"
+
+#: ../data/ui/menu/main.xml:7
+msgid "Update Library"
+msgstr "Bibliothek aktualisieren"
+
+#: ../data/ui/menu/main.xml:15
+msgid "Import Backup"
+msgstr ""
+
+#: ../data/ui/menu/main.xml:21
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: ../data/ui/menu/main.xml:25
+msgid "Keyboard Shortcuts"
+msgstr "Tastenkürzel"
+
+#: ../data/ui/menu/main.xml:29
+msgid "About Komikku"
+msgstr "Über Komikku"
+
+#: ../data/ui/menu/card_selection_mode.xml:15
+msgid "Mark as Read"
+msgstr "Als gelesen markieren"
+
+#: ../data/ui/menu/card_selection_mode.xml:19
+msgid "Mark as Unread"
+msgstr "Als ungelesen markieren"
+
+#: ../data/ui/menu/card.xml:18
+msgid "Order of Chapters"
+msgstr "Kapitelsortierung"
+
+#: ../data/ui/menu/card.xml:23
+msgid "By Chapter Number (9-0)"
+msgstr "Nach Kapitel-Nummer absteigend"
+
+#: ../data/ui/menu/card.xml:28
+msgid "By Chapter Number (0-9)"
+msgstr "Nach Kapitel-Nummer aufsteigend"
+
+#: ../data/ui/menu/card.xml:38
+msgid "Open in Browser"
+msgstr "Im Browser öffnen"
+
+#: ../data/ui/application_window.ui:584
+msgid "Last update"
+msgstr "Zuletzt aktualisiert"
+
+#: ../data/ui/application_window.ui:659
+msgid "Info"
+msgstr "Info"
+
+#: ../data/ui/application_window.ui:690
 msgid "Chapters"
 msgstr "Kapitel"
 
