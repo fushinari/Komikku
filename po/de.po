@@ -827,9 +827,9 @@ msgstr ""
 "Kauf offizieller Manga unterstützen kannst, sobald\n"
 "diese in deiner Sprache/deinem Land erhältlich sind."
 
-#: ../data/ui/about_dialog.ui.in:17
-msgid "Learn more about Komikku"
-msgstr "Mehr über Komikku erfahren"
+#: ../data/ui/application_window.ui:688
+msgid "Chapters"
+msgstr "Kapitel"
 
 #: ../data/ui/add_dialog.ui:46
 msgid "Select a server"

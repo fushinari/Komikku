@@ -1462,6 +1462,9 @@ msgstr ""
 #~ msgid "Use desktop notifications for downloads"
 #~ msgstr "Toon meldingen voor, tijdens en na het downloaden"
 
+#~ msgid "@appid@"
+#~ msgstr "@appid@"
+
 #~ msgid "Settings"
 #~ msgstr "Instellingen"
 

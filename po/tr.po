@@ -27,6 +27,9 @@ msgstr ""
 #: ../data/info.febvre.Komikku.appdata.xml.in:40
 msgid "Valéry Febvre"
 msgstr ""
+"DİKKAT\n"
+"{0} sunucusu artık desteklenmemektedir.\n"
+"Lütfen başka bir sunucuya geçin."
 
 #: ../data/info.febvre.Komikku.appdata.xml.in:51
 msgid "[Add dialog] Add Back navigation between pages via Esc key"
@@ -1462,6 +1465,9 @@ msgstr ""
 
 #~ msgid "Use desktop notifications for downloads"
 #~ msgstr "İndirmeler için masaüstü bildirimlerini kullan"
+
+#~ msgid "@appid@"
+#~ msgstr "@appid@"
 
 #~ msgid "Crop borders"
 #~ msgstr "Kenarları kırp"

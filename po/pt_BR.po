@@ -747,23 +747,9 @@ msgstr "@prettyname@"
 msgid "manga;reader;viewer;comic;webtoon;scan;offline;"
 msgstr "mangá;leitor;visualizador;comic;webtoon;scan;offline;"
 
-#: ../data/ui/about_dialog.ui.in:11
-msgid ""
-"An online/offline manga reader.\n"
-"\n"
-"Never forget, you can support the authors\n"
-"by buying the official comics when they are\n"
-"available in your region/language."
-msgstr ""
-"Um leitor de mangá online/offline.\n"
-"\n"
-"Nunca se esqueça, você pode apoiar os autores\n"
-"comprando os quadrinhos oficiais quando estão\n"
-"disponível em sua região/idioma."
-
-#: ../data/ui/about_dialog.ui.in:17
-msgid "Learn more about Komikku"
-msgstr "Saiba mais sobre o Komikku"
+#: ../data/ui/application_window.ui:657
+msgid "Info"
+msgstr "Informação"
 
 #: ../data/ui/add_dialog.ui:46
 msgid "Select a server"
