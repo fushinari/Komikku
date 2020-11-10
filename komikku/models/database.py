@@ -306,22 +306,25 @@ class Manga:
         with db_conn:
             id = insert_row(db_conn, 'mangas', data)
 
-            rank = 0
-            for chapter_data in chapters:
-                chapter = Chapter.new(chapter_data, rank, id, db_conn)
-                if chapter is not None:
-                    rank += 1
+            if id is not None:
+                rank = 0
+                for chapter_data in chapters:
+                    chapter = Chapter.new(chapter_data, rank, id, db_conn)
+                    if chapter is not None:
+                        rank += 1
 
         db_conn.close()
 
         manga = cls.get(id, server)
 
-        if not os.path.exists(manga.path):
-            os.makedirs(manga.path)
+        if manga:
+            if not os.path.exists(manga.path):
+                os.makedirs(manga.path)
 
-        manga._save_cover(cover_url)
+            manga._save_cover(cover_url)
 
-        return manga
+            return manga
+        return None
 
     @property
     def chapters(self):
@@ -363,11 +366,19 @@ class Manga:
     @property
     def nb_downloaded_chapters(self):
         db_conn = create_db_connection()
-        row = db_conn.execute(
-            'SELECT count() AS downloaded FROM chapters WHERE manga_id = ? AND downloaded = 1 and read = 0', (self.id,)).fetchone()
+        row = db_conn.execute('SELECT count() AS downloaded FROM chapters WHERE manga_id = ? AND downloaded = 1', (self.id,)).fetchone()
         db_conn.close()
 
         return row['downloaded']
+
+    @property
+    def nb_to_read_chapters(self):
+        db_conn = create_db_connection()
+        row = db_conn.execute(
+            'SELECT count() AS to_read FROM chapters WHERE manga_id = ? AND downloaded = 1 and read = 0', (self.id,)).fetchone()
+        db_conn.close()
+
+        return row['to_read']
 
     @property
     def nb_recent_chapters(self):
@@ -504,7 +515,9 @@ class Manga:
             for row in rows:
                 if row['slug'] not in chapters_slugs:
                     gone_chapter = Chapter.get(row['id'], manga=self, db_conn=db_conn)
-                    if not gone_chapter.downloaded:
+                    # Interestingly, Manga Plus chapters remain accessible through the same slugs indefinitely.
+                    # So, there's no need to remove the chapter if the server is Manga Plus.
+                    if not gone_chapter.downloaded and not self.server.id == 'mangaplus':
                         # Delete chapter
                         gone_chapter.delete(db_conn)
                         nb_deleted_chapters += 1
@@ -646,6 +659,9 @@ class Chapter:
             shutil.rmtree(self.path)
 
     def get_page(self, page_index):
+        if not self.pages:
+            return None
+
         page_path = self.get_page_path(page_index)
         if page_path:
             return page_path

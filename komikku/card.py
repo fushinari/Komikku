@@ -217,10 +217,12 @@ class Card:
 
 
 class ChaptersList:
+    action_row = None
     selection_mode_range = False
     selection_mode_last_row_index = None
     selection_mode_last_walk_direction = None
     populate_generator_stop_flag = False
+    selection_mode_queue = []
 
     def __init__(self, card):
         self.card = card
@@ -237,9 +239,57 @@ class ChaptersList:
         self.gesture.set_touch_only(False)
         self.gesture.connect('pressed', self.on_gesture_long_press_activated)
 
+        self.search_bar = self.window.card_search_bar
+        self.search_entry = self.window.card_search_entry
+        self.search_entry.connect('changed', self.search)
+        self.search_entry.connect('activate', self.on_search_activate)
+
+        self.window.connect('key-press-event', self.on_key_press)
         self.window.downloader.connect('download-changed', self.update_chapter_row)
 
-        def sort(child1, child2):
+        def _filter(child):
+            """
+            This function gets one child has to return:
+            - True if the child should be displayed
+            - False if the child should not be displayed
+            """
+            chapter = child.chapter
+            term = self.search_entry.get_text().lower()
+            filter_matched = False
+
+            # Filter out the weeds during search
+            if term.startswith(".d"):
+                ret = bool(chapter.downloaded) is True
+                filter_matched = True
+
+            if term.startswith(".l"):
+                ret = bool(chapter.downloaded) is False
+                filter_matched = True
+
+            if term.startswith(".r"):
+                ret = bool(chapter.read) is True
+                filter_matched = True
+
+            if term.startswith(".t"):
+                ret = bool(chapter.downloaded) is True and bool(chapter.read) is False
+                filter_matched = True
+
+            if term.startswith(".u"):
+                ret = bool(chapter.read) is False
+                filter_matched = True
+
+            if filter_matched is True:
+                term = term[2:].strip(': ')
+                if term:
+                    ret = ret and (term in chapter.title.lower())
+                return ret
+
+            # Search in name
+            ret = term in chapter.title.lower()
+
+            return ret
+
+        def _sort(child1, child2):
             """
             This function gets two children and has to return:
             - a negative integer if the firstone should come before the second one
@@ -262,7 +312,8 @@ class ChaptersList:
 
             return 0
 
-        self.listbox.set_sort_func(sort)
+        self.listbox.set_sort_func(_sort)
+        self.listbox.set_filter_func(_filter)
 
     def add_actions(self):
         # Menu actions in selection mode
@@ -314,7 +365,7 @@ class ChaptersList:
 
     def download_selected_chapters(self, action, param):
         # Add selected chapters in download queue
-        self.window.downloader.add([row.chapter for row in self.listbox.get_selected_rows()], emit_signal=True)
+        self.window.downloader.add([row.chapter for row in self.selection_mode_queue], emit_signal=True)
         self.window.downloader.start()
 
         self.card.leave_selection_mode()
@@ -322,6 +373,7 @@ class ChaptersList:
     def enter_selection_mode(self):
         self.selection_mode_last_row_index = None
         self.selection_mode_last_walk_direction = None
+        self.selection_mode_queue = []
 
         self.listbox.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
 
@@ -329,6 +381,7 @@ class ChaptersList:
         self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
         for row in self.listbox.get_children():
             row._selected = False
+        self.selection_mode_queue = []
 
     def on_chapter_row_button_pressed(self, event_box, event):
         row = event_box.get_parent()
@@ -360,6 +413,7 @@ class ChaptersList:
                     walk_row = self.listbox.get_row_at_index(walk_index)
                     if walk_row and not walk_row._selected:
                         self.listbox.select_row(walk_row)
+                        self.selection_mode_queue.append(walk_row)
                         walk_row._selected = True
 
                     if walk_index < last_index:
@@ -371,16 +425,19 @@ class ChaptersList:
 
             if row._selected:
                 self.listbox.unselect_row(row)
+                self.selection_mode_queue.remove(row)
                 self.selection_mode_last_row_index = None
                 row._selected = False
             else:
                 self.listbox.select_row(row)
+                self.selection_mode_queue.append(row)
                 self.selection_mode_last_row_index = row.get_index()
                 row._selected = True
 
             if len(self.listbox.get_selected_rows()) == 0:
                 self.card.leave_selection_mode()
         else:
+            self.search_mode = False
             self.window.reader.init(self.card.manga, row.chapter)
 
     def on_gesture_long_press_activated(self, gesture, x, y):
@@ -393,7 +450,7 @@ class ChaptersList:
 
     def on_key_pressed(self, _widget, event):
         if event.keyval not in (Gdk.KEY_Up, Gdk.KEY_KP_Up, Gdk.KEY_Down, Gdk.KEY_KP_Down) or not self.card.selection_mode:
-            return Gdk.EVENT_STOP
+            return self.on_search_start(event)
 
         modifiers = Gtk.accelerator_get_default_mod_mask()
         is_single = event.state & modifiers != Gdk.ModifierType.SHIFT_MASK
@@ -440,6 +497,27 @@ class ChaptersList:
             walk_row._selected = True
 
         return Gdk.EVENT_STOP
+
+    def on_search_start(self, event):
+        """Search can be triggered by simply typing a printable character"""
+
+        if self.window.page != 'card' or self.card.stack.get_visible_child_name() != 'page_card_chapters':
+            return Gdk.EVENT_PROPAGATE
+
+        modifiers = event.get_state() & Gtk.accelerator_get_default_mod_mask()
+        is_printable = GLib.unichar_isgraph(chr(Gdk.keyval_to_unicode(event.keyval)))
+        if is_printable and modifiers in (Gdk.ModifierType.SHIFT_MASK, 0):
+            if not self.search_mode:
+                return self.search_bar.handle_event(event)
+            else:
+                self.search_entry.grab_focus_without_selecting()
+
+        return Gdk.EVENT_PROPAGATE
+
+    def on_search_activate(self, _entry):
+        row = self.listbox.get_row_at_y(0)
+        if row:
+            self.on_chapter_row_clicked(self.listbox, row)
 
     def on_selection_changed(self, _flowbox):
         number = len(self.listbox.get_selected_rows())
@@ -632,6 +710,17 @@ class ChaptersList:
 
         self.card.leave_selection_mode()
 
+    def search(self, _entry):
+        self.listbox.invalidate_filter()
+
+    @property
+    def search_mode(self):
+        return self.search_bar.get_search_mode()
+
+    @search_mode.setter
+    def search_mode(self, state):
+        self.search_bar.set_search_mode(state)
+
     def select_all(self, action=None, param=None):
         if self.card.stack.get_visible_child_name() != 'chapters':
             return
@@ -640,12 +729,14 @@ class ChaptersList:
             self.card.enter_selection_mode()
 
         def select_chapters_rows():
-            for row in self.listbox.get_children():
+            self.listbox.emit('select-all')
+
+            for row in self.listbox.get_selected_rows():
                 if row._selected:
                     continue
-
-                self.listbox.select_row(row)
                 row._selected = True
+                if row not in self.selection_mode_queue:
+                    self.selection_mode_queue.append(row)
                 yield True
 
             self.window.activity_indicator.stop()
@@ -768,7 +859,7 @@ class ChaptersList:
         if chapter is None:
             chapter = download.chapter
 
-        if self.card.window.page not in ('card', 'reader') or self.card.manga.id != chapter.manga_id:
+        if self.window.page not in ('card', 'reader') or self.card.manga.id != chapter.manga_id:
             return
 
         for row in self.listbox.get_children():

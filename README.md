@@ -1,6 +1,34 @@
+# This is a personal fork of [Komikku](https://www.gitlab.com/valos/Komikku)
+
+This is a fork of Komikku and NOT the official repo. It will almost definitely have issues. The `personal` branch is where I make my changes. Most of the time, both upstream and this branch are **essentially the same** because I try to upstream all the working changes asap and I have a pretty comfortable reading environment here now.
+
+Basically, don't use this.
+
+Major differences right now (in order of stability):
+
+* Chapters are downloaded in the order that you selected them in the Chapters list and not based on chapter list sorting. Seems stable, especially since it simply adds a variable and that's basically it.
+* Search within chapter lists, only accessible by beginning to type. There is no search button. The selection behavior during search works as I want and expect it to work, but it might not be ideal for everyone.
+* Selection and search handling in the Library is different from `master` and arguably better:
+  * In `master`, selection mode is inaccessible while in search mode and vice versa. However, in `personal`, selection mode is accessible while in search mode but not the other way around.
+  * The issues caused by keeping it enabled have been fixed or worked around because I find this to be essential.
+  * Also, `<Control>+A` action is now always enabled.
+  * The search button and search entry are completely hidden while in selection mode.
+* Experimental Tachiyomi backup import functionality. Not sure it'll work for anyone else and even if it does, it's not assured to properly work at least.
+
+Minor differences:
+
+* Added a Makefile (originally by @TAAPArthur), slightly modified and improved.
+* Use GNOME Platform 3.36 in Flatpaks.
+* Fix for MangaDex 403 forbidden errors. I haven't identified the exact cause, so the fix is simply a workaround and not an ideal one at that. But... it works. It almost never happens anyway.
+* Enabled DeepSource analysis ([![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gl/fushinari/Komikku/?ref=repository-badge))
+* Preferences window is centered on the main window on launch.
+* Minor changes in this README file.
+
+The actual README follows. It's mostly the same as the official README.
+
 # <img height="88" src="data/icons/info.febvre.Komikku.svg" /> Komikku
 
-[![pipeline status](https://gitlab.com/valos/Komikku/badges/master/pipeline.svg)](https://gitlab.com/valos/Komikku/commits/master)
+[![pipeline status](https://gitlab.com/fushinari/Komikku/badges/personal/pipeline.svg)](https://gitlab.com/fushinari/Komikku/commits/personal)
 [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app)
 
 An online/offline manga reader for [GNOME](https://www.gnome.org), developed with the aim of being used with the *Librem 5* phone.
@@ -38,7 +66,7 @@ Komikku is licensed under the [GPLv3+](https://www.gnu.org/licenses/gpl-3.0.html
 
 ### Native package
 
-Komikku is available as native package in the repositories of the following distributions:
+Komikku is available as a native package in the repositories of the following distributions:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/komikku.svg)](https://repology.org/project/komikku/versions)
 
@@ -84,22 +112,23 @@ This is the best practice to test Komikku without installing using meson and nin
 
 ```bash
 git clone https://gitlab.com/valos/Komikku
-cd Komikku
-mkdir _build
-cd _build
-meson ..
-meson configure -Dprefix=$(pwd)/testdir
-ninja install # This will actually install in _build/testdir
-ninja run
+make
+make local
 ```
 
 #### Later on
 
 ```bash
-cd Komikku/_build
-ninja install # This will actually install in _build/testdir
-ninja run
+make local
 ```
+
+#### To Run
+
+```bash
+make run
+```
+
+To use the development profile, use `make develop` instead of `make local`.
 
 ### Option 3: Build and install system-wide directly with Meson
 
@@ -110,11 +139,19 @@ But if you know what you're doing, here you go:
 ```bash
 git clone https://gitlab.com/valos/Komikku
 cd Komikku
-mkdir _build
-cd _build
-meson ..
-ninja install
+make
+make install
 ```
+
+If you've already used Option 2, do:
+
+```bash
+make clean
+make
+make install
+```
+
+You may need to run `make install` with `sudo`.
 
 ## Translations
 

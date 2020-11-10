@@ -115,9 +115,7 @@ class Izneo(Server):
         return data
 
     def get_manga_chapter_page_image(self, manga_slug, manga_name, chapter_slug, page):
-        """
-        Returns chapter page scan (image) content
-        """
+        """ Returns chapter page scan (image) content """
         r = self.session_get(self.base_reader_url + page['image'])
         if r.status_code != 200:
             return None
@@ -133,15 +131,11 @@ class Izneo(Server):
         )
 
     def get_manga_url(self, slug, url):
-        """
-        Returns manga absolute URL
-        """
+        """ Returns manga absolute URL """
         return self.base_url + url
 
     def get_most_populars(self):
-        """
-        Returns all series available in user's collection
-        """
+        """ Returns all series available in user's collection """
         return self.search_in_user_collection('')
 
     def login(self, username, password):

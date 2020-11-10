@@ -131,6 +131,8 @@ class ApplicationWindow(Handy.ApplicationWindow):
     library_flowbox = Gtk.Template.Child('library_flowbox')
 
     card_title_label = Gtk.Template.Child('card_title_label')
+    card_search_bar = Gtk.Template.Child('card_search_bar')
+    card_search_entry = Gtk.Template.Child('card_search_entry')
     card_subtitle_label = Gtk.Template.Child('card_subtitle_label')
     card_stack = Gtk.Template.Child('card_stack')
     card_chapters_listbox = Gtk.Template.Child('card_chapters_listbox')
@@ -417,14 +419,16 @@ class ApplicationWindow(Handy.ApplicationWindow):
                 AddDialog(self).open(action, param)
             if self.library.selection_mode:
                 self.library.leave_selection_mode()
-            if self.library.search_mode and action is None:
+            elif self.library.search_mode and action is None:
                 self.library.leave_search_mode()
         elif self.page == 'card':
-            if self.card.selection_mode:
+            if self.card.chapters_list.search_mode:
+                self.card.chapters_list.search_mode = False
+            elif self.card.selection_mode:
                 self.card.leave_selection_mode()
             else:
                 self.card.stop_populate()
-                self.library.show(invalidate_sort=True)
+                self.library.show(invalidate_sort=True, invalidate_filter=True)
         elif self.page == 'reader':
             self.set_unfullscreen()
 
@@ -440,9 +444,11 @@ class ApplicationWindow(Handy.ApplicationWindow):
 
         self._prev_size = size
 
-        self.library.on_resize()
+        # self.library.on_resize()
+        GLib.idle_add(self.library.on_resize)
         if self.page == 'reader':
-            self.reader.on_resize()
+            # self.reader.on_resize()
+            GLib.idle_add(self.reader.on_resize)
 
         if size.width < 700:
             if self.mobile_width is True:

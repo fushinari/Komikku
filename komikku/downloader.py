@@ -26,9 +26,7 @@ DOWNLOAD_DELAY = 1  # in seconds
 
 
 class Downloader(GObject.GObject):
-    """
-    Chapters downloader
-    """
+    """ Chapters downloader """
     __gsignals__ = {
         'download-changed': (GObject.SIGNAL_RUN_FIRST, None, (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT, )),
         'ended': (GObject.SIGNAL_RUN_FIRST, None, ()),
@@ -199,7 +197,8 @@ class Downloader(GObject.GObject):
 
         def notify_download_error(download, message=None):
             if message:
-                self.window.show_notification(message)
+                self.window.show_notification(f'[{download.chapter.manga.name}] Chapter {download.chapter.title}'
+                                              f'\nDownload failed. Please try again.\n{message}')
 
             self.emit('download-changed', download, None)
 
@@ -599,9 +598,7 @@ class DownloadRow(Gtk.ListBoxRow):
         self.add(vbox)
 
     def update(self):
-        """
-        Updates chapter download progress
-        """
+        """ Updates chapter download progress """
         if not self.download.chapter.pages:
             return
 

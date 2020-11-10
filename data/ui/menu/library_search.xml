@@ -15,6 +15,10 @@
                 <attribute name="label" translatable="yes">Recents</attribute>
                 <attribute name="action">app.library.search.recents</attribute>
             </item>
+            <item>
+                <attribute name="label" translatable="yes">To Read</attribute>
+                <attribute name="action">app.library.search.to-read</attribute>
+            </item>
         </section>
     </menu>
 </interface>

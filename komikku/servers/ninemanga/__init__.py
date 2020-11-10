@@ -148,9 +148,7 @@ class Ninemanga(Server):
         return data
 
     def get_manga_chapter_page_image(self, manga_slug, manga_name, chapter_slug, page):
-        """
-        Returns chapter page scan (image) content
-        """
+        """ Returns chapter page scan (image) content """
         # Scrap HTML page to get image url
         r = self.session_get(self.page_url.format(manga_slug, page['slug']))
         if r is None:
@@ -175,15 +173,11 @@ class Ninemanga(Server):
         )
 
     def get_manga_url(self, slug, url):
-        """
-        Returns manga absolute URL
-        """
+        """ Returns manga absolute URL """
         return self.manga_url.format(slug)
 
     def get_most_populars(self):
-        """
-        Returns Hot manga list
-        """
+        """ Returns Hot manga list """
         r = self.session_get(self.most_populars_url)
         if r is None:
             return None

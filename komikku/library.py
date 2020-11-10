@@ -20,6 +20,7 @@ from komikku.downloader import DownloadManagerDialog
 from komikku.models import create_db_connection
 from komikku.models import Manga
 from komikku.models import update_rows
+from komikku.importer import import_from_file
 from komikku.servers import get_file_mime_type
 from komikku.utils import scale_pixbuf_animation
 
@@ -66,6 +67,7 @@ class Library:
         def _filter(thumbnail):
             manga = thumbnail.manga
             term = self.search_entry.get_text().lower()
+            ret = True
 
             # Search in name
             ret = term in manga.name.lower()
@@ -74,7 +76,8 @@ class Library:
             ret = ret or term in manga.server.name.lower()
 
             # Search in genres (exact match)
-            ret = ret or term in [genre.lower() for genre in manga.genres]
+            if manga.genres:
+                ret = ret or term in [genre.lower() for genre in manga.genres]
 
             # Optional menu filters
             if ret and self.search_menu_filters.get('downloaded'):
@@ -83,6 +86,8 @@ class Library:
                 ret = manga.nb_unread_chapters > 0
             if ret and self.search_menu_filters.get('recents'):
                 ret = manga.nb_recent_chapters > 0
+            if ret and self.search_menu_filters.get('to-read'):
+                ret = manga.nb_to_read_chapters > 0
 
             if not ret and thumbnail._selected:
                 # Unselect thumbnail if it's selected
@@ -126,6 +131,10 @@ class Library:
         download_manager_action.connect('activate', self.open_download_manager)
         self.window.application.add_action(download_manager_action)
 
+        importer_action = Gio.SimpleAction.new('library.importer', None)
+        importer_action.connect('activate', self.show_file_chooser)
+        self.window.application.add_action(importer_action)
+
         # Search menu actions
         search_downloaded_action = Gio.SimpleAction.new_stateful('library.search.downloaded', None, GLib.Variant('b', False))
         search_downloaded_action.connect('change-state', self.on_search_menu_action_changed)
@@ -138,6 +147,10 @@ class Library:
         search_recents_action = Gio.SimpleAction.new_stateful('library.search.recents', None, GLib.Variant('b', False))
         search_recents_action.connect('change-state', self.on_search_menu_action_changed)
         self.window.application.add_action(search_recents_action)
+
+        search_to_read_action = Gio.SimpleAction.new_stateful('library.search.to-read', None, GLib.Variant('b', False))
+        search_to_read_action.connect('change-state', self.on_search_menu_action_changed)
+        self.window.application.add_action(search_to_read_action)
 
         # Menu actions in selection mode
         update_selected_action = Gio.SimpleAction.new('library.update-selected', None)
@@ -456,7 +469,7 @@ class Library:
             thumbnail._selected = True
             self.flowbox.select_child(thumbnail)
 
-    def show(self, invalidate_sort=False):
+    def show(self, invalidate_sort=False, invalidate_filter=False):
         self.window.left_button_image.set_from_icon_name('list-add-symbolic', Gtk.IconSize.MENU)
 
         self.search_button.show()
@@ -472,7 +485,53 @@ class Library:
         if invalidate_sort:
             self.flowbox.invalidate_sort()
 
+        if invalidate_filter:
+            self.flowbox.invalidate_filter()
+
         self.window.show_page('library')
+
+    def show_file_chooser(self, action, param):
+        warning_dialog = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.WARNING, Gtk.ButtonsType.YES_NO,
+                                           "Try not to use this.")
+        warning_dialog.format_secondary_text("Tachiyomi backups are not really compatible with how Komikku is structured. "
+                                             "And as of now, there is nothing called a Komikku backup. "
+                                             "So, this will not always work correctly and might result in database corruption. "
+                                             "Basically, it comes with no warranty. It also requires a library update for "
+                                             "the metadata to be corrected. Would you still like to continue?")
+        warning_response = warning_dialog.run()
+        warning_dialog.destroy()
+        if warning_response == Gtk.ResponseType.YES:
+            print("I'm worried for you.")
+        elif warning_response in (Gtk.ResponseType.NO, Gtk.ResponseType.DELETE_EVENT, ):
+            print("Good choice.")
+            return False
+
+        dialog = Gtk.FileChooserDialog(
+            "Please choose your backup file", self.window,
+            Gtk.FileChooserAction.OPEN,
+            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+             Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+        )
+        filter_json = Gtk.FileFilter()
+        filter_json.set_name("Tachiyomi JSON Backup files")
+        filter_json.add_mime_type("application/json")
+        dialog.add_filter(filter_json)
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            import_from_file(self.window, dialog.get_filename())
+
+            question_dialog = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO,
+                                                "Update Library?")
+            question_dialog.format_secondary_text("A library update is necessary for the manga information to correctly obtained. "
+                                                  "Would you like to do the update now?")
+            question_response = question_dialog.run()
+            question_dialog.destroy()
+            if question_response == Gtk.ResponseType.YES:
+                self.window.updater.update_library()
+
+        dialog.destroy()
+
+        return True
 
     def toggle_search_mode(self, button):
         if button.get_active():

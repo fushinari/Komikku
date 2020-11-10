@@ -93,6 +93,8 @@ def is_flatpak():
 def log_error_traceback(e):
     if isinstance(e, (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.ChunkedEncodingError)):
         return _('No Internet connection, timeout or server down')
+    if isinstance(e, GLib.GError):
+        return _('Failed to load image')
 
     logger.info(traceback.format_exc())
 

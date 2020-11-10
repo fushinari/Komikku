@@ -105,7 +105,8 @@ class Server:
         else:
             self.logged_in = True
 
-    def login(self, username, password):
+    @staticmethod
+    def login(username, password):
         return False
 
     @cached_property
@@ -150,9 +151,7 @@ class Server:
             del Server.__sessions[self.id]
 
     def get_manga_cover_image(self, url):
-        """
-        Returns manga cover (image) content
-        """
+        """ Returns manga cover (image) content """
         if url is None:
             return None
 

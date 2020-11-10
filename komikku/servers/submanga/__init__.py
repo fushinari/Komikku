@@ -139,9 +139,7 @@ class Submanga(Server):
         return data
 
     def get_manga_chapter_page_image(self, manga_slug, manga_name, chapter_slug, page):
-        """
-        Returns chapter page scan (image) content
-        """
+        """ Returns chapter page scan (image) content """
         r = self.session_get(self.image_url.format(manga_slug, chapter_slug, page['image']))
         if r is None or r.status_code != 200:
             return None
@@ -157,15 +155,11 @@ class Submanga(Server):
         )
 
     def get_manga_url(self, slug, url):
-        """
-        Returns manga absolute URL
-        """
+        """ Returns manga absolute URL """
         return self.manga_url.format(slug)
 
     def get_most_populars(self):
-        """
-        Returns most viewed manga list
-        """
+        """ Returns most viewed manga list """
         r = self.session_get(self.most_populars_url)
         if r is None:
             return None

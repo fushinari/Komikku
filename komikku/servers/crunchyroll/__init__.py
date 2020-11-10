@@ -168,9 +168,7 @@ class Crunchyroll(Server):
         return data
 
     def get_manga_chapter_page_image(self, manga_slug, manga_name, chapter_slug, page):
-        """
-        Returns chapter page scan (image) content
-        """
+        """ Returns chapter page scan (image) content """
         r = self.session_get(page['image'])
         if r.status_code != 200:
             return None
@@ -189,15 +187,11 @@ class Crunchyroll(Server):
 
     @staticmethod
     def get_manga_url(slug, url):
-        """
-        Returns manga absolute URL
-        """
+        """ Returns manga absolute URL """
         return url
 
     def get_most_populars(self):
-        """
-        Returns full list of manga sorted by rank
-        """
+        """ Returns full list of manga sorted by rank """
         r = self.session_get(self.api_series_url)
 
         result = []
@@ -217,9 +211,7 @@ class Crunchyroll(Server):
         return result
 
     def init_api(self):
-        """
-        Retrieves API session ID and authentication token
-        """
+        """ Retrieves API session ID and authentication token """
         self._get_session_id()
         r = self.session_get(self.api_auth_url.format(self.api_session_id))
         data = r.json()
@@ -231,9 +223,7 @@ class Crunchyroll(Server):
         return False
 
     def login(self, username, password):
-        """
-        Log in and initializes API
-        """
+        """ Log in and initializes API """
         if not username or not password:
             return False
         self._get_session_id()
