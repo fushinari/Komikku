@@ -17,8 +17,6 @@ Major differences right now (in order of stability):
 
 Minor differences:
 
-* Added a Makefile (originally by @TAAPArthur), slightly modified and improved.
-* Fix for MangaDex 403 forbidden errors. I haven't identified the exact cause, so the fix is simply a workaround and not an ideal one at that. But... it works. It almost never happens anyway.
 * Enabled DeepSource analysis ([![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gl/fushinari/Komikku/?ref=repository-badge))
 * Minor changes in this README file.
 
@@ -110,7 +108,7 @@ This is the best practice to test Komikku without installing using meson and nin
 
 ```bash
 git clone https://gitlab.com/valos/Komikku
-make
+make setup
 make local
 ```
 

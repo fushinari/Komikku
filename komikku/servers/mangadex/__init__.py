@@ -5,7 +5,6 @@
 # Author: Valéry Febvre <vfebvre@easter-eggs.com>
 
 from bs4 import BeautifulSoup
-import cloudscraper
 from datetime import datetime
 import html
 import logging
@@ -128,7 +127,6 @@ class Mangadex(Server):
         'DNT': '1',
         'Connection': 'keep-alive',
     }
-    image_session = None
 
     def __init__(self, username=None, password=None):
         self.init(username, password)
@@ -254,12 +252,7 @@ class Mangadex(Server):
 
     def get_manga_chapter_page_image(self, manga_slug, manga_name, chapter_slug, page):
         """ Returns chapter page scan (image) content """
-        # The image server often gives 403 forbidden errors with a logged-in session
-        # Which is weird, I know, but it happens and I haven't figured out exactly why
-        if self.image_session is None:
-            self.image_session = cloudscraper.create_scraper()
-
-        r = self.image_session.get(page['image'], headers={
+        r = self.session_get(page['image'], headers={
             'Accept': 'image/webp,image/*;q=0.8,*/*;q=0.5',
             'Referer': self.page_url.format(chapter_slug, 1),
         })
